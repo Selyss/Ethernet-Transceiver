@@ -29,7 +29,7 @@ This project has a hierarchical design structure:
     - **`RX_frame`** (current verification target): Receiver frame processing logic
     - **`TX_frame`** (submodule): Transmitter frame processing logic
 
-**For the initial phase of verification, the testbench instantiates `RX_frame` as the default DUT.** This allows you to thoroughly verify the receiver functionality and frame synchronization before integrating it into the higher-level `control_transceiver` and `frame_sync_tx_rx` modules. The test file `test/test.py` contains cocotb test cases that drive the testbench and verify:
+**For the initial phase of verification, the testbench instantiates `RX_frame` as the default DUT.** This allows you to thoroughly verify the receiver functionality and frame synchronization before integrating it into the higher-level `control_transceiver` and `frame_sync_tx_rx` modules. The test files you complete at `test/test.py` should contain cocotb test cases that drive the testbench and verify:
 - Frame reception and synchronization
 - Byte extraction and state management
 - Receiver status signals
