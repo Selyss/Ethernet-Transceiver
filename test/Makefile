@@ -36,9 +36,18 @@ COMPILE_ARGS 		+= -I$(SRC_DIR)
 # Include the testbench sources:
 VERILOG_SOURCES += $(PWD)/tb.v
 TOPLEVEL = tb
+RX_FRAME_TB_BUILD = sim_build/rx_frame_tb.vvp
 
 # MODULE is the basename of the Python test file
 MODULE = test
+
+.PHONY: rx_frame_tb
+rx_frame_tb: $(RX_FRAME_TB_BUILD)
+	vvp $(RX_FRAME_TB_BUILD)
+
+$(RX_FRAME_TB_BUILD): $(SRC_DIR)/RX_frame.v $(PWD)/RX_frame_tb.v
+	mkdir -p $(dir $@)
+	iverilog -g2012 -I$(SRC_DIR) -o $@ $^
 
 # include cocotb's make rules to take care of the simulator setup
 include $(shell cocotb-config --makefiles)/Makefile.sim
