@@ -45,6 +45,8 @@ module RX_frame_tb ();
     repeat (20) @(posedge clk);
     rst_n = 1;
 
+    // TEST: Happy path
+
     // PREAMBLE
     send_byte(8'h55);
     send_byte(8'h55);
@@ -98,6 +100,96 @@ module RX_frame_tb ();
     send_byte(8'hC4);
 
     repeat (20) @(posedge clk);
+
+    // TEST: Bad preable (invalid byte)
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h54);
+    // orx_status = ERROR
+
+    repeat (20) @(posedge clk);
+
+    // TEST: Bad SFD (invalid SFD)
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+
+    send_byte(8'hD4);
+
+    // TEST: Bad Ethtype (too small)
+
+    // PREAMBLE
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+
+    // SFD
+    send_byte(8'hD5);
+
+    // Destination MAC
+    send_byte(8'hA1);
+    send_byte(8'hA2);
+    send_byte(8'hA3);
+    send_byte(8'hA4);
+    send_byte(8'hA5);
+    send_byte(8'hA6);
+
+    // Source MAC
+    send_byte(8'hB1);
+    send_byte(8'hB2);
+    send_byte(8'hB3);
+    send_byte(8'hB4);
+    send_byte(8'hB5);
+    send_byte(8'hB6);
+
+    // ETHTYPE
+    send_byte(8'h00);
+    send_byte(8'h01);
+
+    // TEST: Ethtype (too large)
+
+    // PREAMBLE
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+    send_byte(8'h55);
+
+    // SFD
+    send_byte(8'hD5);
+
+    // Destination MAC
+    send_byte(8'hA1);
+    send_byte(8'hA2);
+    send_byte(8'hA3);
+    send_byte(8'hA4);
+    send_byte(8'hA5);
+    send_byte(8'hA6);
+
+    // Source MAC
+    send_byte(8'hB1);
+    send_byte(8'hB2);
+    send_byte(8'hB3);
+    send_byte(8'hB4);
+    send_byte(8'hB5);
+    send_byte(8'hB6);
+
+    // ETHTYPE
+    send_byte(8'h00);
+    send_byte(8'h32);
+
+
     $display("simulation finished");
     $finish;
 
