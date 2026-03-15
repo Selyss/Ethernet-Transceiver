@@ -34,12 +34,24 @@ module RX_frame (
   reg [5:0] byte_cnt;
   reg [15:0] payload_len;
 
-  wire byte_done = (bit_cnt == 3'D7);
-  wire [7:0] assembled = {din, shift_reg[7:1]}; // assembled byte that completed cycle
+  wire byte_done = (bit_cnt == 3'd7);
+  wire [7:0] assembled = {din, shift_reg[7:1]};  // assembled byte that completed cycle
 
   always @(*) begin
     case (state)
-      IDLE: next_state = 
+      IDLE: if (byte_done && assembled == 8'h55) next_state = PREAMBLE;
+      PREAMBLE: begin
+        if (byte_done && byte_cnt < 7 && assembled != 8'h55) next_state = IDLE;
+        if (byte_done && byte_cnt == 7 && assembled == 8'hD5) next_state = MAC;
+        if (byte_done && byte_cnt == 7 && assembled != 8'hD5) next_state = IDLE;
+      end
+      MAC:  if (byte_done && byte_cnt == 12) next_state = ETHTYPE;
+      ETHTYPE:
+      if (byte_done && byte_cnt == 2) begin
+        if ({payload_len[15:8], assembled} < 12 || {payload_len[15:8], assembled} > 46)
+          next_state = IDLE;
+        else next_state = PAYLOAD;
+      end
     endcase
   end
 
