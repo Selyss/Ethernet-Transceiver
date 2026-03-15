@@ -12,7 +12,7 @@ module RX_frame_tb ();
   reg clk;
   reg rst_n;
   reg din;
-  wire [1:0] orx_state;
+  wire [2:0] orx_state;
   wire [7:0] orx_byte;
   wire [1:0] orx_status;
 
